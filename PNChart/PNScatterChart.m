@@ -99,7 +99,7 @@
     _AxisX_Margin = 30 ;
     _AxisY_Margin = 30 ;
     
-//    self.frame = CGRectMake((SCREEN_WIDTH - self.frame.size.width) / 2, 200, self.frame.size.width, self.frame.size.height) ;
+//    self.frame = CGRectMake(0, 150, self.frame.size.width, self.frame.size.height);
     self.backgroundColor = [UIColor clearColor];
     
     _startPoint.y = self.frame.size.height - self.AxisY_Margin ;
@@ -108,7 +108,7 @@
     _axisX_labels = [NSMutableArray array];
     _axisY_labels = [NSMutableArray array];
     
-    _descriptionTextColor = [UIColor blackColor];
+    _descriptionTextColor = [UIColor grayColor];
     _descriptionTextFont  = [UIFont fontWithName:@"Avenir-Medium" size:9.0];
     _descriptionTextShadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.4];
     _descriptionTextShadowOffset =  CGSizeMake(0, 1);
@@ -306,26 +306,64 @@
     [super drawRect:rect];
     
     CGContextRef context = UIGraphicsGetCurrentContext();
-        if (_showCoordinateAxis) {
-            CGContextSetStrokeColorWithColor(context, [_axisColor CGColor]);
-            CGContextSetLineWidth(context, _axisWidth);
-            //drawing x vector
-            CGContextMoveToPoint(context, _startPoint.x, _startPoint.y);
-            CGContextAddLineToPoint(context, _endPointVecotrX.x, _endPointVecotrX.y);
-            //drawing y vector
-            CGContextMoveToPoint(context, _startPoint.x, _startPoint.y);
-            CGContextAddLineToPoint(context, _endPointVecotrY.x, _endPointVecotrY.y);
-            //drawing x arrow vector
-            CGContextMoveToPoint(context, _endPointVecotrX.x, _endPointVecotrX.y);
-            CGContextAddLineToPoint(context, _endPointVecotrX.x - 5, _endPointVecotrX.y + 3);
-            CGContextMoveToPoint(context, _endPointVecotrX.x, _endPointVecotrX.y);
-            CGContextAddLineToPoint(context, _endPointVecotrX.x - 5, _endPointVecotrX.y - 3);
-            //drawing y arrow vector
-            CGContextMoveToPoint(context, _endPointVecotrY.x, _endPointVecotrY.y);
-            CGContextAddLineToPoint(context, _endPointVecotrY.x - 3, _endPointVecotrY.y + 5);
-            CGContextMoveToPoint(context, _endPointVecotrY.x, _endPointVecotrY.y);
-            CGContextAddLineToPoint(context, _endPointVecotrY.x + 3, _endPointVecotrY.y + 5);
+    if (_showCoordinateAxis) {
+        CGContextRef lineContext = UIGraphicsGetCurrentContext();
+
+        CGContextSetStrokeColorWithColor(lineContext, [_axisColor CGColor]);
+        CGContextSetLineWidth(lineContext, _axisWidth);
+        //drawing x vector
+        CGContextMoveToPoint(lineContext, _startPoint.x, _startPoint.y);
+        CGContextAddLineToPoint(lineContext, _endPointVecotrX.x, _endPointVecotrX.y);
+        //drawing y vector
+        CGContextMoveToPoint(lineContext, _startPoint.x, _startPoint.y);
+        CGContextAddLineToPoint(lineContext, _endPointVecotrY.x, _endPointVecotrY.y);
+        
+        CGContextDrawPath(lineContext, kCGPathStroke);
+    }
+    
+    if (self.showYGridLines) {
+        CGFloat yAxisOffset = _showLabel ? 10.f : 0.0f;
+        CGPoint point;
+        if (self.yGridLinesColor) {
+            CGContextSetStrokeColorWithColor(context, self.yGridLinesColor.CGColor);
+        } else {
+            CGContextSetStrokeColorWithColor(context, [UIColor lightGrayColor].CGColor);
         }
+        for (NSUInteger i = 0; i < _axisY_labels.count; i++) {
+            point = CGPointMake(_AxisX_Margin + yAxisOffset, (_startPointVectorY.y - (_vectorY_Steps / 2) - i * _vectorY_Steps));
+            CGContextMoveToPoint(context, point.x, point.y);
+            // add dotted style grid
+            CGFloat dash[] = {6, 5};
+            // dot diameter is 20 points
+            CGContextSetLineWidth(context, 0.5);
+            CGContextSetLineCap(context, kCGLineCapRound);
+            CGContextSetLineDash(context, 0.0, dash, 2);
+            CGContextAddLineToPoint(context, CGRectGetWidth(rect) - _AxisX_Margin + 5, point.y);
+            CGContextStrokePath(context);
+        }
+    }
+    
+    if (self.showXGridLines) {
+        CGFloat xAxisOffset = _showLabel ? 10.f : 0.0f;
+        CGPoint point;
+        if (self.xGridLinesColor) {
+            CGContextSetStrokeColorWithColor(context, self.yGridLinesColor.CGColor);
+        } else {
+            CGContextSetStrokeColorWithColor(context, [UIColor lightGrayColor].CGColor);
+        }
+        for (NSUInteger i = 0; i < _axisX_labels.count; i++) {
+            point = CGPointMake((_startPointVectorX.x + (_vectorX_Steps / 2) + i * _vectorX_Steps), _AxisY_Margin - xAxisOffset);
+            CGContextMoveToPoint(context, point.x, point.y);
+            // add dotted style grid
+            CGFloat dash[] = {6, 5};
+            // dot diameter is 20 points
+            CGContextSetLineWidth(context, 0.5);
+            CGContextSetLineCap(context, kCGLineCapRound);
+            CGContextSetLineDash(context, 0.0, dash, 2);
+            CGContextAddLineToPoint(context, point.x,CGRectGetHeight(rect) - _AxisY_Margin);
+            CGContextStrokePath(context);
+        }
+    }
     
     if (_showLabel) {
         //drawing x steps vector and putting axis x labels
@@ -363,6 +401,7 @@
             temp = temp - _vectorY_Steps ;
         }
     }
+    
     CGContextDrawPath(context, kCGPathStroke);
 }
 

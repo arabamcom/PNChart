@@ -233,12 +233,14 @@
 
         self.titleLabel.text = @"Scatter Chart";
 
-        self.scatterChart = [[PNScatterChart alloc] initWithFrame:CGRectMake((CGFloat) (SCREEN_WIDTH / 6.0 - 30), 135, 280, 200)];
+        self.scatterChart = [[PNScatterChart alloc] initWithFrame:CGRectMake(0, 150, SCREEN_WIDTH, 300)];
 //        self.scatterChart.yLabelFormat = @"xxx %1.1f";
         [self.scatterChart setAxisXWithMinimumValue:20 andMaxValue:100 toTicks:6];
-        [self.scatterChart setAxisYWithMinimumValue:30 andMaxValue:50 toTicks:5];
+        [self.scatterChart setAxisYWithMinimumValue:30 andMaxValue:50 toTicks:7];
         [self.scatterChart setAxisXLabel:@[@"x1", @"x2", @"x3", @"x4", @"x5", @"x6"]];
-        [self.scatterChart setAxisYLabel:@[@"y1", @"y2", @"y3", @"y4", @"y5"]];
+        [self.scatterChart setAxisYLabel:@[@"y1", @"y2", @"y3", @"y4", @"y5",@"y6",@"y7"]];
+        [self.scatterChart setShowYGridLines:YES];
+        [self.scatterChart setShowXGridLines:YES];
 
         NSArray *data01Array = [self randomSetOfObjects];
         PNScatterChartData *data01 = [PNScatterChartData new];

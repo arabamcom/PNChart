@@ -25,6 +25,12 @@
 @property (nonatomic) UIColor *axisColor;
 @property (nonatomic) CGFloat axisWidth;
 
+/** Grid Lines */
+@property (nonatomic) BOOL showYGridLines;
+@property (nonatomic) UIColor *yGridLinesColor;
+@property (nonatomic) BOOL showXGridLines;
+@property (nonatomic) UIColor *xGridLinesColor;
+
 /** String formatter for float values in x-axis/y-axis labels. If not set, defaults to @"%1.f" */
 @property (nonatomic, strong) NSString *xLabelFormat;
 @property (nonatomic, strong) NSString *yLabelFormat;
