@@ -433,6 +433,38 @@
         
         // Add to parent layer
         return square;
+    }else if (chartData.inflexionPointStyle == PNScatterChartPointStyleCustomCircle){
+        float radius = chartData.size;
+
+        // Main circular shape
+        CAShapeLayer *mainCircle = [CAShapeLayer layer];
+        mainCircle.path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(X - (radius * 3), Y - (radius * 3), 2.0*(radius * 3), 2.0*(radius * 3))
+                                                 cornerRadius:(radius * 3)].CGPath;
+        mainCircle.fillColor = [UIColor.clearColor CGColor];
+        mainCircle.strokeColor = [chartData.strokeColor CGColor];
+        mainCircle.lineWidth = 1;
+        
+        // Middle a circular shape
+        CAShapeLayer *middleCircle = [CAShapeLayer layer];
+        middleCircle.path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(X - (radius * 2), Y - (radius * 2), 2.0*(radius * 2), 2.0*(radius * 2))
+                                                     cornerRadius:(radius * 2)].CGPath;
+        middleCircle.fillColor = [UIColor.clearColor CGColor];
+        middleCircle.strokeColor = [chartData.strokeColor CGColor];
+        middleCircle.lineWidth = 1;
+        
+        // Center a circular shape
+        CAShapeLayer *centerCircle = [CAShapeLayer layer];
+        centerCircle.path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(X - radius, Y - radius, 2.0*radius, 2.0*radius)
+                                                 cornerRadius:radius].CGPath;
+        centerCircle.fillColor = [chartData.strokeColor CGColor];
+        centerCircle.lineWidth = 1;
+        
+        // Add sublayers
+        [mainCircle addSublayer:middleCircle];
+        [mainCircle addSublayer:centerCircle];
+
+        // Add to parent layer
+        return mainCircle;
     }
     else {
         // you cann add your own scatter chart point here

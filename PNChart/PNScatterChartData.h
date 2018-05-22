@@ -12,6 +12,7 @@
 typedef NS_ENUM(NSUInteger, PNScatterChartPointStyle) {
     PNScatterChartPointStyleCircle = 0,
     PNScatterChartPointStyleSquare = 1,
+    PNScatterChartPointStyleCustomCircle = 2,
 };
 
 @class PNScatterChartDataItem;

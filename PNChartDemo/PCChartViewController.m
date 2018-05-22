@@ -248,7 +248,7 @@
         data01.fillColor = PNFreshGreen;
         data01.size = 2;
         data01.itemCount = [data01Array[0] count];
-        data01.inflexionPointStyle = PNScatterChartPointStyleCircle;
+        data01.inflexionPointStyle = PNScatterChartPointStyleCustomCircle;
         __block NSMutableArray *XAr1 = [NSMutableArray arrayWithArray:data01Array[0]];
         __block NSMutableArray *YAr1 = [NSMutableArray arrayWithArray:data01Array[1]];
 
