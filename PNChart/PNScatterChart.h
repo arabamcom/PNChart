@@ -66,6 +66,7 @@
 - (void) setup;
 - (void) drawLineFromPoint : (CGPoint) startPoint ToPoint : (CGPoint) endPoint WithLineWith : (CGFloat) lineWidth AndWithColor : (UIColor*) color;
 - (void)setExactPoint:(CGPoint)point;
+- (void) drawExactLineFromPoint : (CGPoint) startPoint ToPoint : (CGPoint) endPoint WithLineWith : (CGFloat) lineWidth AndWithColor : (UIColor*) color AndWithTitle: (NSString*)title;
 /**
  * Update Chart Value
  */

@@ -565,6 +565,60 @@
     });
 }
 
+- (void) drawExactLineFromPoint : (CGPoint) startPoint ToPoint : (CGPoint) endPoint WithLineWith : (CGFloat) lineWidth AndWithColor : (UIColor*) color AndWithTitle: (NSString*)title{
+    
+    // call the same method on a background thread
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if (self.displayAnimated) {
+            [NSThread sleepForTimeInterval:2];
+        }
+        // calculating start and end point
+        __block CGFloat startX = [self mappingIsForAxisX:true WithValue:startPoint.x];
+        __block CGFloat startY = [self mappingIsForAxisX:false WithValue:startPoint.y];
+        __block CGFloat endX = [self mappingIsForAxisX:true WithValue:endPoint.x];
+        __block CGFloat endY = [self mappingIsForAxisX:false WithValue:endPoint.y];
+        // update UI on the main thread
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // drawing path between two points
+            UIBezierPath *path = [UIBezierPath bezierPath];
+            [path moveToPoint:CGPointMake(startX, startY)];
+            [path addLineToPoint:CGPointMake(endX, endY)];
+            CAShapeLayer *shapeLayer = [CAShapeLayer layer];
+            shapeLayer.path = [path CGPath];
+            shapeLayer.strokeColor = [color CGColor];
+            shapeLayer.lineWidth = lineWidth;
+            shapeLayer.fillColor = [color CGColor];
+            // adding animation to path
+            [self addStrokeEndAnimationIfNeededToLayer:shapeLayer];
+            [self.layer addSublayer:shapeLayer];
+            
+            [self showExactLabelInPosition:CGPointMake(startX, startY) withTitle:title AndWithColor:color];
+        });
+    });
+}
+
+- (void) showExactLabelInPosition : (CGPoint) point withTitle: (NSString *)title AndWithColor : (UIColor*) color {
+    CGFloat labelWidth = 60;
+    CGFloat labelHeight = 24;
+    
+    UILabel *exactLabel = [[UILabel alloc] initWithFrame:CGRectMake(point.x - labelWidth / 2, point.y - labelHeight, labelWidth, labelHeight)];
+    exactLabel.font = [UIFont boldSystemFontOfSize:11];
+    exactLabel.textColor = [UIColor blackColor];
+    exactLabel.textAlignment = NSTextAlignmentCenter;
+    exactLabel.backgroundColor = [UIColor whiteColor];
+    exactLabel.text = title;
+    [exactLabel.layer setBorderColor:[color CGColor]];
+    [exactLabel.layer setBorderWidth:2];
+    [self addSubview:exactLabel];
+    
+    exactLabel.alpha = 0;
+    [UIView animateWithDuration:0.3 animations:^{
+        exactLabel.alpha = 1;
+    }];
+}
+
+
+
 - (void)addStrokeEndAnimationIfNeededToLayer:(CAShapeLayer *)shapeLayer{
     
     if (self.displayAnimated) {

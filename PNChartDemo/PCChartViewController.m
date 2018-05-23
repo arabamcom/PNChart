@@ -270,6 +270,10 @@
         CGPoint end = CGPointMake(100, 40);
         [self.scatterChart drawLineFromPoint:start ToPoint:end WithLineWith:2 AndWithColor:PNRed];
         
+        CGPoint start3 = CGPointMake(60, 50);
+        CGPoint end3 = CGPointMake(60, 30);
+        [self.scatterChart drawExactLineFromPoint:start3 ToPoint:end3 WithLineWith:2 AndWithColor:PNStarYellow AndWithTitle:@"Aracın"];
+        
         [self.scatterChart setExactPoint:CGPointMake(60, 41)];
 
         self.scatterChart.delegate = self;
