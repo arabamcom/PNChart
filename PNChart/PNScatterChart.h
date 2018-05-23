@@ -65,7 +65,7 @@
 - (void) setAxisYLabel:(NSArray *)array;
 - (void) setup;
 - (void) drawLineFromPoint : (CGPoint) startPoint ToPoint : (CGPoint) endPoint WithLineWith : (CGFloat) lineWidth AndWithColor : (UIColor*) color;
-
+- (void)setExactPoint:(CGPoint)point;
 /**
  * Update Chart Value
  */

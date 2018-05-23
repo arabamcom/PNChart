@@ -241,7 +241,7 @@
         [self.scatterChart setAxisYLabel:@[@"y1", @"y2", @"y3", @"y4", @"y5",@"y6",@"y7"]];
         [self.scatterChart setShowYGridLines:YES];
         [self.scatterChart setShowXGridLines:YES];
-
+        
         NSArray *data01Array = [self randomSetOfObjects];
         PNScatterChartData *data01 = [PNScatterChartData new];
         data01.strokeColor = PNGreen;
@@ -261,12 +261,17 @@
 
         [self.scatterChart setup];
         self.scatterChart.chartData = @[data01];
-/***    
-        this is for drawing line to compare
-        CGPoint start = CGPointMake(20, 35);
-        CGPoint end = CGPointMake(80, 45);
-        [self.scatterChart drawLineFromPoint:start ToPoint:end WithLineWith:2 AndWithColor:PNBlack];
-***/
+        
+        CGPoint start2 = CGPointMake(20, 42);
+        CGPoint end2 = CGPointMake(100, 40);
+        [self.scatterChart drawLineFromPoint:start2 ToPoint:end2 WithLineWith:40 AndWithColor:PNRedAlpha];
+        
+        CGPoint start = CGPointMake(20, 42);
+        CGPoint end = CGPointMake(100, 40);
+        [self.scatterChart drawLineFromPoint:start ToPoint:end WithLineWith:2 AndWithColor:PNRed];
+        
+        [self.scatterChart setExactPoint:CGPointMake(60, 41)];
+
         self.scatterChart.delegate = self;
         self.changeValueButton.hidden = YES;
         [self.view addSubview:self.scatterChart];

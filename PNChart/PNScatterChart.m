@@ -261,6 +261,34 @@
     });
 }
 
+- (void)setExactPoint:(CGPoint)point
+{
+    __block CGFloat yFinilizeValue , xFinilizeValue;
+    __block CGFloat yValue , xValue;
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if (self.displayAnimated) {
+            [NSThread sleepForTimeInterval:2.5f];
+        }
+        // update UI on the main thread
+        dispatch_async(dispatch_get_main_queue(), ^{
+            yValue = point.y;
+            xValue = point.x;
+            if (!(xValue >= _AxisX_minValue && xValue <= _AxisX_maxValue) || !(yValue >= _AxisY_minValue && yValue <= _AxisY_maxValue)) {
+                NSLog(@"input is not in correct range.");
+                exit(0);
+            }
+            xFinilizeValue = [self mappingIsForAxisX:true WithValue:xValue];
+            yFinilizeValue = [self mappingIsForAxisX:false WithValue:yValue];
+            CAShapeLayer *shape = [self drawingPointsForExactPointDataWithX:xFinilizeValue AndWithY:yFinilizeValue];
+            self.pathLayer = shape ;
+            [self.layer addSublayer:self.pathLayer];
+            
+            [self addAnimationIfNeeded];
+        });
+    });
+}
+
 - (void)addAnimationIfNeeded{
     
     if (self.displayAnimated) {
@@ -315,8 +343,8 @@
         CGContextMoveToPoint(lineContext, _startPoint.x, _startPoint.y);
         CGContextAddLineToPoint(lineContext, _endPointVecotrX.x, _endPointVecotrX.y);
         //drawing y vector
-        CGContextMoveToPoint(lineContext, _startPoint.x, _startPoint.y);
-        CGContextAddLineToPoint(lineContext, _endPointVecotrY.x, _endPointVecotrY.y);
+//        CGContextMoveToPoint(lineContext, _startPoint.x, _startPoint.y);
+//        CGContextAddLineToPoint(lineContext, _endPointVecotrY.x, _endPointVecotrY.y);
         
         CGContextDrawPath(lineContext, kCGPathStroke);
     }
@@ -394,8 +422,8 @@
             shapeLayer.strokeColor = [_axisColor CGColor];
             shapeLayer.lineWidth = _axisWidth;
             shapeLayer.fillColor = [_axisColor CGColor];
-            [self.verticalLineLayer addObject:shapeLayer];
-            [self.layer addSublayer:shapeLayer];
+//            [self.verticalLineLayer addObject:shapeLayer];
+//            [self.layer addSublayer:shapeLayer];
             UILabel *lb = [_axisY_labels objectAtIndex:i];
             [self showXLabel:lb InPosition:CGPointMake(_startPointVectorY.x - 30, temp - 5)];
             temp = temp - _vectorY_Steps ;
@@ -470,6 +498,41 @@
         // you cann add your own scatter chart point here
     }
     return nil ;
+}
+
+- (CAShapeLayer*) drawingPointsForExactPointDataWithX : (CGFloat) X AndWithY : (CGFloat) Y
+{
+    float radius = 4;
+    
+    // Main circular shape
+    CAShapeLayer *mainCircle = [CAShapeLayer layer];
+    mainCircle.path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(X - (radius * 3), Y - (radius * 3), 2.0*(radius * 3), 2.0*(radius * 3))
+                                                 cornerRadius:(radius * 3)].CGPath;
+    mainCircle.strokeColor = [UIColor.clearColor CGColor];
+    mainCircle.fillColor = [[UIColor colorWithRed:255.0f/255.0f green:219.0f/255.0f blue:77.0f/255.0f alpha:0.5f] CGColor];
+    mainCircle.lineWidth = 1;
+    
+    // Middle a circular shape
+    CAShapeLayer *middleCircle = [CAShapeLayer layer];
+    middleCircle.path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(X - (radius * 2), Y - (radius * 2), 2.0*(radius * 2), 2.0*(radius * 2))
+                                                   cornerRadius:(radius * 2)].CGPath;
+    middleCircle.fillColor = [[UIColor colorWithRed:255.0f/255.0f green:219.0f/255.0f blue:77.0f/255.0f alpha:1.0f] CGColor];
+    middleCircle.strokeColor = [UIColor.clearColor CGColor];
+    middleCircle.lineWidth = 1;
+    
+    // Center a circular shape
+    CAShapeLayer *centerCircle = [CAShapeLayer layer];
+    centerCircle.path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(X - radius, Y - radius, 2.0*radius, 2.0*radius)
+                                                   cornerRadius:radius].CGPath;
+    centerCircle.fillColor = [UIColor.whiteColor CGColor];
+    centerCircle.lineWidth = 1;
+    
+    // Add sublayers
+    [mainCircle addSublayer:middleCircle];
+    [mainCircle addSublayer:centerCircle];
+    
+    // Add to parent layer
+    return mainCircle;
 }
 
 - (void) drawLineFromPoint : (CGPoint) startPoint ToPoint : (CGPoint) endPoint WithLineWith : (CGFloat) lineWidth AndWithColor : (UIColor*) color{
