@@ -565,6 +565,44 @@
     });
 }
 
+- (void) drawRectangleForPoint:(NSArray<NSValue *> *)points fillColor:(UIColor *)color {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if (self.displayAnimated) { [NSThread sleepForTimeInterval:2]; }
+        
+        NSMutableArray<NSValue *> *viewPoints = [NSMutableArray arrayWithCapacity:points.count];
+        for (NSValue *value in points) {
+            CGPoint point = [value CGPointValue];
+            __block CGFloat x = [self mappingIsForAxisX:true WithValue:point.x];
+            __block CGFloat y = [self mappingIsForAxisX:false WithValue:point.y];
+            NSValue *viewValue = [NSValue valueWithCGPoint:CGPointMake(x, y)];
+            [viewPoints addObject:viewValue];
+        }
+        
+        // update UI on the main thread
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIBezierPath *path = [UIBezierPath bezierPath];
+            CGPoint startingPoint = [viewPoints[0] CGPointValue];
+            [path moveToPoint:CGPointMake(startingPoint.x, startingPoint.y)];
+            for (int i = 1; i < viewPoints.count; i++) {
+                CGPoint point = [viewPoints[i] CGPointValue];
+                [path addLineToPoint:CGPointMake(point.x, point.y)];
+                if (i == viewPoints.count - 1) {
+                    [path addLineToPoint:CGPointMake(startingPoint.x, startingPoint.y)];
+                }
+            }
+            
+            CAShapeLayer *shapeLayer = [CAShapeLayer layer];
+            shapeLayer.path = [path CGPath];
+            shapeLayer.strokeColor = [color CGColor];
+            shapeLayer.lineWidth = 1;
+            shapeLayer.fillColor = [color CGColor];
+            // adding animation to path
+            [self addStrokeEndAnimationIfNeededToLayer:shapeLayer];
+            [self.layer addSublayer:shapeLayer];
+        });
+    });
+}
+
 - (void) drawExactLineFromPoint : (CGPoint) startPoint ToPoint : (CGPoint) endPoint WithLineWith : (CGFloat) lineWidth AndWithColor : (UIColor*) color AndWithTitle: (NSString*)title{
     
     // call the same method on a background thread
