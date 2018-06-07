@@ -85,7 +85,7 @@
     
     // Initialization code
     self.backgroundColor = [UIColor whiteColor];
-    self.clipsToBounds   = YES;
+    self.clipsToBounds   = NO;
     _showLabel           = YES;
     _isForUpdate         = NO;
     self.userInteractionEnabled = YES;
@@ -99,7 +99,7 @@
     _AxisX_Margin = 30 ;
     _AxisY_Margin = 30 ;
     
-//    self.frame = CGRectMake(0, 150, self.frame.size.width, self.frame.size.height);
+    //    self.frame = CGRectMake(0, 150, self.frame.size.width, self.frame.size.height);
     self.backgroundColor = [UIColor clearColor];
     
     _startPoint.y = self.frame.size.height - self.AxisY_Margin ;
@@ -171,7 +171,7 @@
             min = [number floatValue];
     }
     NSArray *result = @[[NSNumber numberWithFloat:min], [NSNumber numberWithFloat:max]];
-   
+    
     
     return result;
 }
@@ -218,7 +218,7 @@
 
 - (void) showXLabel : (UILabel *) descriptionLabel InPosition : (CGPoint) point
 {
-    CGRect frame = CGRectMake(point.x, point.y, 30, 10);
+    CGRect frame = CGRectMake(point.x - 25, point.y, 50, 20); // 30 10
     descriptionLabel.frame = frame;
     descriptionLabel.font = _descriptionTextFont;
     descriptionLabel.textColor = _descriptionTextColor;
@@ -226,6 +226,21 @@
     descriptionLabel.shadowOffset = _descriptionTextShadowOffset;
     descriptionLabel.textAlignment = NSTextAlignmentCenter;
     descriptionLabel.backgroundColor = [UIColor clearColor];
+    descriptionLabel.transform = CGAffineTransformMakeRotation(-(M_PI / 4));
+    [self addSubview:descriptionLabel];
+}
+
+- (void) showYLabel : (UILabel *) descriptionLabel InPosition : (CGPoint) point
+{
+    CGRect frame = CGRectMake(point.x, point.y, 50, 20); // 30 10
+    descriptionLabel.frame = frame;
+    descriptionLabel.font = _descriptionTextFont;
+    descriptionLabel.textColor = _descriptionTextColor;
+    descriptionLabel.shadowColor = _descriptionTextShadowColor;
+    descriptionLabel.shadowOffset = _descriptionTextShadowOffset;
+    descriptionLabel.textAlignment = NSTextAlignmentCenter;
+    descriptionLabel.backgroundColor = [UIColor clearColor];
+    descriptionLabel.transform = CGAffineTransformMakeRotation(-(M_PI / 4));
     [self addSubview:descriptionLabel];
 }
 
@@ -233,7 +248,7 @@
 {
     __block CGFloat yFinilizeValue , xFinilizeValue;
     __block CGFloat yValue , xValue;
-
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         if (self.displayAnimated) {
             [NSThread sleepForTimeInterval:1];
@@ -246,7 +261,6 @@
                     xValue = chartData.getData(i).x;
                     if (!(xValue >= _AxisX_minValue && xValue <= _AxisX_maxValue) || !(yValue >= _AxisY_minValue && yValue <= _AxisY_maxValue)) {
                         NSLog(@"input is not in correct range.");
-                        exit(0);
                     }
                     xFinilizeValue = [self mappingIsForAxisX:true WithValue:xValue];
                     yFinilizeValue = [self mappingIsForAxisX:false WithValue:yValue];
@@ -276,7 +290,6 @@
             xValue = point.x;
             if (!(xValue >= _AxisX_minValue && xValue <= _AxisX_maxValue) || !(yValue >= _AxisY_minValue && yValue <= _AxisY_maxValue)) {
                 NSLog(@"input is not in correct range.");
-                exit(0);
             }
             xFinilizeValue = [self mappingIsForAxisX:true WithValue:xValue];
             yFinilizeValue = [self mappingIsForAxisX:false WithValue:yValue];
@@ -323,7 +336,7 @@
 - (void)updateChartData:(NSArray *)data
 {
     _chartData = data;
-
+    
     // will be work in future.
 }
 
@@ -336,15 +349,15 @@
     CGContextRef context = UIGraphicsGetCurrentContext();
     if (_showCoordinateAxis) {
         CGContextRef lineContext = UIGraphicsGetCurrentContext();
-
+        
         CGContextSetStrokeColorWithColor(lineContext, [_axisColor CGColor]);
         CGContextSetLineWidth(lineContext, _axisWidth);
         //drawing x vector
         CGContextMoveToPoint(lineContext, _startPoint.x, _startPoint.y);
         CGContextAddLineToPoint(lineContext, _endPointVecotrX.x, _endPointVecotrX.y);
         //drawing y vector
-//        CGContextMoveToPoint(lineContext, _startPoint.x, _startPoint.y);
-//        CGContextAddLineToPoint(lineContext, _endPointVecotrY.x, _endPointVecotrY.y);
+        //        CGContextMoveToPoint(lineContext, _startPoint.x, _startPoint.y);
+        //        CGContextAddLineToPoint(lineContext, _endPointVecotrY.x, _endPointVecotrY.y);
         
         CGContextDrawPath(lineContext, kCGPathStroke);
     }
@@ -422,10 +435,10 @@
             shapeLayer.strokeColor = [_axisColor CGColor];
             shapeLayer.lineWidth = _axisWidth;
             shapeLayer.fillColor = [_axisColor CGColor];
-//            [self.verticalLineLayer addObject:shapeLayer];
-//            [self.layer addSublayer:shapeLayer];
+            //            [self.verticalLineLayer addObject:shapeLayer];
+            //            [self.layer addSublayer:shapeLayer];
             UILabel *lb = [_axisY_labels objectAtIndex:i];
-            [self showXLabel:lb InPosition:CGPointMake(_startPointVectorY.x - 30, temp - 5)];
+            [self showYLabel:lb InPosition:CGPointMake(_startPointVectorY.x - 30, temp - 5)];
             temp = temp - _vectorY_Steps ;
         }
     }
@@ -463,11 +476,11 @@
         return square;
     }else if (chartData.inflexionPointStyle == PNScatterChartPointStyleCustomCircle){
         float radius = chartData.size;
-
+        
         // Main circular shape
         CAShapeLayer *mainCircle = [CAShapeLayer layer];
         mainCircle.path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(X - (radius * 3), Y - (radius * 3), 2.0*(radius * 3), 2.0*(radius * 3))
-                                                 cornerRadius:(radius * 3)].CGPath;
+                                                     cornerRadius:(radius * 3)].CGPath;
         mainCircle.fillColor = [UIColor.clearColor CGColor];
         mainCircle.strokeColor = [chartData.strokeColor CGColor];
         mainCircle.lineWidth = 1;
@@ -475,7 +488,7 @@
         // Middle a circular shape
         CAShapeLayer *middleCircle = [CAShapeLayer layer];
         middleCircle.path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(X - (radius * 2), Y - (radius * 2), 2.0*(radius * 2), 2.0*(radius * 2))
-                                                     cornerRadius:(radius * 2)].CGPath;
+                                                       cornerRadius:(radius * 2)].CGPath;
         middleCircle.fillColor = [UIColor.clearColor CGColor];
         middleCircle.strokeColor = [chartData.strokeColor CGColor];
         middleCircle.lineWidth = 1;
@@ -483,14 +496,14 @@
         // Center a circular shape
         CAShapeLayer *centerCircle = [CAShapeLayer layer];
         centerCircle.path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(X - radius, Y - radius, 2.0*radius, 2.0*radius)
-                                                 cornerRadius:radius].CGPath;
+                                                       cornerRadius:radius].CGPath;
         centerCircle.fillColor = [chartData.strokeColor CGColor];
         centerCircle.lineWidth = 1;
         
         // Add sublayers
         [mainCircle addSublayer:middleCircle];
         [mainCircle addSublayer:centerCircle];
-
+        
         // Add to parent layer
         return mainCircle;
     }
