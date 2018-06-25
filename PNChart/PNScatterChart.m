@@ -649,6 +649,10 @@
 }
 
 - (void) showExactLabelInPosition : (CGPoint) point withTitle: (NSString *)title AndWithColor : (UIColor*) color {
+    if (isnan(point.x) || isnan(point.y) ) {
+        return;
+    }
+    
     CGFloat labelWidth = 60;
     CGFloat labelHeight = 24;
     
