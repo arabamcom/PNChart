@@ -19,7 +19,8 @@
                         shadow:NO
                    shadowColor:[UIColor clearColor]
           displayCountingLabel:YES
-             overrideLineWidth:@8.0f];
+             overrideLineWidth:@8.0f
+                       lineCap:kCALineCapRound];
     
 }
 
@@ -32,7 +33,8 @@
                         shadow:shadow
                    shadowColor:backgroundShadowColor
           displayCountingLabel:YES
-             overrideLineWidth:@8.0f];
+             overrideLineWidth:@8.0f
+                       lineCap:kCALineCapRound];
     
 }
 
@@ -45,7 +47,8 @@
                         shadow:shadow
                    shadowColor:backgroundShadowColor
           displayCountingLabel:displayCountingLabel
-             overrideLineWidth:@8.0f];
+             overrideLineWidth:@8.0f
+                       lineCap:kCALineCapRound];
     
 }
 
@@ -58,6 +61,29 @@
 displayCountingLabel:(BOOL)displayCountingLabel
   overrideLineWidth:(NSNumber *)overrideLineWidth
 {
+    return [self initWithFrame:frame
+                         total:total
+                       current:current
+                     clockwise:clockwise
+                        shadow:shadow
+                   shadowColor:backgroundShadowColor
+          displayCountingLabel:displayCountingLabel
+             overrideLineWidth:@8.0f
+                       lineCap:kCALineCapRound];
+    
+}
+
+
+- (id)initWithFrame:(CGRect)frame
+              total:(NSNumber *)total
+            current:(NSNumber *)current
+          clockwise:(BOOL)clockwise
+             shadow:(BOOL)hasBackgroundShadow
+        shadowColor:(UIColor *)backgroundShadowColor
+displayCountingLabel:(BOOL)displayCountingLabel
+  overrideLineWidth:(NSNumber *)overrideLineWidth
+            lineCap:(CAShapeLayerLineCap)lineCap
+{
     self = [super initWithFrame:frame];
 
     if (self) {
@@ -67,7 +93,7 @@ displayCountingLabel:(BOOL)displayCountingLabel
         _duration = 1.0;
         _chartType = PNChartFormatTypePercent;
         _displayAnimated = YES;
-        
+        _lineCap = lineCap;
         _displayCountingLabel = displayCountingLabel;
 
         CGFloat startAngle = clockwise ? -90.0f : 270.0f;
@@ -83,14 +109,14 @@ displayCountingLabel:(BOOL)displayCountingLabel
 
         _circle               = [CAShapeLayer layer];
         _circle.path          = circlePath.CGPath;
-        _circle.lineCap       = kCALineCapRound;
+        _circle.lineCap       = lineCap;
         _circle.fillColor     = [UIColor clearColor].CGColor;
         _circle.lineWidth     = [_lineWidth floatValue];
         _circle.zPosition     = 1;
 
         _circleBackground             = [CAShapeLayer layer];
         _circleBackground.path        = circlePath.CGPath;
-        _circleBackground.lineCap     = kCALineCapRound;
+        _circleBackground.lineCap     = lineCap;
         _circleBackground.fillColor   = [UIColor clearColor].CGColor;
         _circleBackground.lineWidth   = [_lineWidth floatValue];
         _circleBackground.strokeColor = (hasBackgroundShadow ? backgroundShadowColor.CGColor : [UIColor clearColor].CGColor);
@@ -114,7 +140,6 @@ displayCountingLabel:(BOOL)displayCountingLabel
 
     return self;
 }
-
 
 - (void)strokeChart
 {
@@ -161,7 +186,7 @@ displayCountingLabel:(BOOL)displayCountingLabel
         self.gradientMask.fillColor = [[UIColor clearColor] CGColor];
         self.gradientMask.strokeColor = [[UIColor blackColor] CGColor];
         self.gradientMask.lineWidth = _circle.lineWidth;
-        self.gradientMask.lineCap = kCALineCapRound;
+        self.gradientMask.lineCap = _lineCap;
         CGRect gradientFrame = CGRectMake(0, 0, 2*self.bounds.size.width, 2*self.bounds.size.height);
         self.gradientMask.frame = gradientFrame;
         self.gradientMask.path = _circle.path;

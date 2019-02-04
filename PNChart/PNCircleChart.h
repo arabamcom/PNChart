@@ -55,6 +55,16 @@ displayCountingLabel:(BOOL)displayCountingLabel;
 displayCountingLabel:(BOOL)displayCountingLabel
   overrideLineWidth:(NSNumber *)overrideLineWidth;
 
+- (id)initWithFrame:(CGRect)frame
+              total:(NSNumber *)total
+            current:(NSNumber *)current
+          clockwise:(BOOL)clockwise
+             shadow:(BOOL)hasBackgroundShadow
+        shadowColor:(UIColor *)backgroundShadowColor
+displayCountingLabel:(BOOL)displayCountingLabel
+  overrideLineWidth:(NSNumber *)overrideLineWidth
+            lineCap:(CAShapeLayerLineCap)lineCap;
+
 @property (strong, nonatomic) UICountingLabel *countingLabel;
 @property (nonatomic) UIColor *strokeColor;
 @property (nonatomic) UIColor *strokeColorGradientStart;
@@ -67,6 +77,7 @@ displayCountingLabel:(BOOL)displayCountingLabel
 @property (nonatomic) CAShapeLayer *circle;
 @property (nonatomic) CAShapeLayer *gradientMask;
 @property (nonatomic) CAShapeLayer *circleBackground;
+@property (nonatomic) CAShapeLayerLineCap lineCap;
 
 @property (nonatomic) BOOL displayCountingLabel;
 @property (nonatomic) BOOL displayAnimated;
