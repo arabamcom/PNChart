@@ -182,10 +182,13 @@
     }
     for (NSNumber *valueString in _yValues) {
         int barIndex = 0;
-        int colorIndex = index % [_numberOfBarsOnXLabel intValue];
-        if (index != 0) {
+        int colorIndex = index;
+        if ([_numberOfBarsOnXLabel intValue] == 1) {
+            barIndex = index;
+        }else if (index != 0) {
             barIndex = index / [_numberOfBarsOnXLabel intValue];
         }
+        
        
         PNBar *bar;
         if (_bars.count == _yValues.count) {
