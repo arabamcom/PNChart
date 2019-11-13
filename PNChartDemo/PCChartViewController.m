@@ -161,15 +161,17 @@
         self.barChart.chartMarginRight = 10.0;
         self.barChart.chartMarginTop = 5.0;
         self.barChart.chartMarginBottom = 10.0;
-
+        [self.barChart setBarBackgroundColor:[UIColor clearColor]];
 
         self.barChart.labelMarginTop = 5.0;
         self.barChart.showChartBorder = YES;
         [self.barChart setXLabels:@[@"2", @"3", @"4", @"5", @"2", @"3", @"4", @"5"]];
 //       self.barChart.yLabels = @[@-10,@0,@10];
 //        [self.barChart setYValues:@[@10000.0,@30000.0,@10000.0,@100000.0,@500000.0,@1000000.0,@1150000.0,@2150000.0]];
-        [self.barChart setYValues:@[@10.82, @1.88, @6.96, @33.93, @10.82, @1.88, @6.96, @33.93]];
-        [self.barChart setStrokeColors:@[PNGreen, PNGreen, PNRed, PNGreen, PNGreen, PNGreen, PNRed, PNGreen]];
+        [self.barChart setYValues:@[@10.82, @1.88, @33.93, @6.96, @10.82, @1.88, @33.93, @6.96, @10.82, @1.88, @33.93, @6.96, @10.82, @1.88, @33.93, @6.96]];
+        [self.barChart setNumberOfBarsOnXLabel:[NSNumber numberWithInt:2]];
+        [self.barChart setStrokeColors:@[PNGreen, PNRed, PNGreen, PNRed, PNGreen, PNRed, PNGreen, PNRed, PNGreen, PNRed, PNGreen, PNRed, PNGreen, PNRed, PNGreen, PNRed]];
+      //  [self.barChart setStrokeColors:@[PNGreen, PNGreen, PNRed, PNGreen, PNGreen, PNGreen, PNRed, PNGreen]];
         self.barChart.isGradientShow = NO;
         self.barChart.isShowNumbers = NO;
 

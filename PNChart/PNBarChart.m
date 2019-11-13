@@ -176,8 +176,17 @@
 {
     //Add bars
     CGFloat chartCavanHeight = self.frame.size.height - _chartMarginTop - _chartMarginBottom - kXLabelHeight;
-    NSInteger index = 0;
+    int index = 0;
+    if (_numberOfBarsOnXLabel == nil) {
+        _numberOfBarsOnXLabel = [NSNumber numberWithInt:1];
+    }
     for (NSNumber *valueString in _yValues) {
+        int barIndex = 0;
+        int colorIndex = index % [_numberOfBarsOnXLabel intValue];
+        if (index != 0) {
+            barIndex = index / [_numberOfBarsOnXLabel intValue];
+        }
+       
         PNBar *bar;
         if (_bars.count == _yValues.count) {
             bar = [_bars objectAtIndex:index];
@@ -186,9 +195,9 @@
             CGFloat barXPosition;
             if (_barWidth) {
                 barWidth = _barWidth;
-                barXPosition = index *  _xLabelWidth + _chartMarginLeft + _xLabelWidth /2.0 - _barWidth /2.0;
+                barXPosition = barIndex *  _xLabelWidth + _chartMarginLeft + _xLabelWidth /2.0 - _barWidth /2.0;
             }else{
-                barXPosition = index *  _xLabelWidth + _chartMarginLeft + _xLabelWidth * 0.25;
+                barXPosition = barIndex *  _xLabelWidth + _chartMarginLeft + _xLabelWidth * 0.25;
                 if (_showLabel) {
                     barWidth = _xLabelWidth * 0.5;
                 }
@@ -206,12 +215,17 @@
             //Set Bar Animation
             bar.displayAnimated = self.displayAnimated;
             //Change Bar Background color
-            bar.backgroundColor = _barBackgroundColor;
+            if (colorIndex == 0) {
+                bar.backgroundColor = _barBackgroundColor;
+            }else {
+                bar.backgroundColor = UIColor.clearColor;
+            }
+           // bar.backgroundColor = _barBackgroundColor;
             //Bar StrokColor First
             if (self.strokeColor) {
                 bar.barColor = self.strokeColor;
             }else{
-                bar.barColor = [self barColorAtIndex:index];
+                bar.barColor = [self barColorAtIndex:colorIndex];
             }
             
             if (self.labelTextColor) {
@@ -247,6 +261,8 @@
         index += 1;
     }
 }
+
+
 - (void)strokeChart
 {
     //Add Labels

@@ -35,6 +35,8 @@ typedef NSString *(^PNYLabelFormatter)(CGFloat yLabelValue);
 @property (nonatomic) float yValueMax;
 @property (nonatomic) UIColor *strokeColor;
 @property (nonatomic) NSArray *strokeColors;
+/** Sets number of bars on x label. CRITICAL WARNING. It must first draw bigger y value and than draw smaller y value on same x axis. If you are setting this, must add y values from bigger to smaller.  */
+@property (nonatomic) NSNumber *numberOfBarsOnXLabel;
 
 
 /** Update Values. */

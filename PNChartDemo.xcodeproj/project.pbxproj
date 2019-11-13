@@ -487,7 +487,7 @@
 			};
 			buildConfigurationList = 0AF7A85F182AA9F5003645C4 /* Build configuration list for PBXProject "PNChartDemo" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
