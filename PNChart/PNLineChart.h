@@ -83,6 +83,7 @@
 @property (nonatomic) BOOL showSmoothLines;
 
 - (void)setXLabels:(NSArray *)xLabels withWidth:(CGFloat)width;
+- (void)setXLabels:(NSArray *)xLabels;
 
 /**
  * Update Chart Value
