@@ -196,13 +196,18 @@
     if (_showLabel) {
         for (NSUInteger index = 0; index < xLabels.count; index++) {
             labelText = xLabels[index];
-
-            NSInteger x = (NSInteger) (index * _xLabelWidth + _chartMarginLeft);
-            NSInteger y = (NSInteger) (_chartMarginBottom + _chartCavanHeight);
-
-            PNChartLabel *label = [[PNChartLabel alloc] initWithFrame:CGRectMake(x, y, (NSInteger) _xLabelWidth, (NSInteger) _chartMarginBottom)];
+            PNChartLabel *label = [[PNChartLabel alloc] initWithFrame:CGRectMake(0, 0, (NSInteger) _xLabelWidth, (NSInteger) _chartMarginBottom)];
             [label setTextAlignment:NSTextAlignmentCenter];
             label.text = labelText;
+            
+            CGFloat labelXPosition;
+            if (_rotateForXAxisText){
+                label.transform = CGAffineTransformMakeRotation(-(M_PI / 4));
+            }
+
+            labelXPosition = (index *  _xLabelWidth + _chartMarginLeft + _xLabelWidth);
+            label.center = CGPointMake(labelXPosition, self.frame.size.height - _chartMarginTop + (label.frame.size.height /2.0) - 5);
+            
             [self setCustomStyleForXLabel:label];
             [self addSubview:label];
             [_xChartLabels addObject:label];
@@ -1007,7 +1012,8 @@ andProgressLinePathsColors:(NSMutableArray *)progressLinePathsColors {
 
     // do not create curved line chart by default
     _showSmoothLines = NO;
-
+    
+    _rotateForXAxisText  = false;
 }
 
 #pragma mark - tools

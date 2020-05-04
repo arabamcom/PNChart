@@ -90,6 +90,8 @@
 
 - (void)updateChartData:(NSArray *)data;
 
+/** Controls whether text for x-axis be straight or rotate 45 degree. */
+@property (nonatomic) BOOL rotateForXAxisText;
 
 /**
  *  returns the Legend View, or nil if no chart data is present. 
