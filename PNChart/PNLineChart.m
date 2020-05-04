@@ -196,17 +196,18 @@
     if (_showLabel) {
         for (NSUInteger index = 0; index < xLabels.count; index++) {
             labelText = xLabels[index];
-            PNChartLabel *label = [[PNChartLabel alloc] initWithFrame:CGRectMake(0, 0, (NSInteger) _xLabelWidth, (NSInteger) _chartMarginBottom)];
+
+            NSInteger x = (NSInteger) (index * _xLabelWidth + _chartMarginLeft);
+            NSInteger y = (NSInteger) (_chartMarginBottom + _chartCavanHeight);
+
+            PNChartLabel *label = [[PNChartLabel alloc] initWithFrame:CGRectMake(x, y, (NSInteger) _xLabelWidth, (NSInteger) _chartMarginBottom)];
             [label setTextAlignment:NSTextAlignmentCenter];
             label.text = labelText;
             
-            CGFloat labelXPosition;
             if (_rotateForXAxisText){
+                [label setFrame:CGRectMake(label.frame.origin.x, label.frame.origin.y + 1, label.frame.size.width, label.frame.size.height)];
                 label.transform = CGAffineTransformMakeRotation(-(M_PI / 4));
             }
-
-            labelXPosition = (index *  _xLabelWidth + _chartMarginLeft + _xLabelWidth);
-            label.center = CGPointMake(labelXPosition, self.frame.size.height - _chartMarginTop + (label.frame.size.height /2.0) - 5);
             
             [self setCustomStyleForXLabel:label];
             [self addSubview:label];
@@ -787,11 +788,15 @@ andProgressLinePathsColors:(NSMutableArray *)progressLinePathsColors {
 
             // draw x axis separator
             CGPoint point;
+            CGFloat startX = (_chartMarginLeft) + (_xLabelWidth / 2);
             for (NSUInteger i = 0; i < [self.xLabels count]; i++) {
-                point = CGPointMake(2 * _chartMarginLeft + (i * _xLabelWidth), _chartMarginBottom + _chartCavanHeight);
+                CGFloat labelWidth = _xLabelWidth;
+                if (i == 0) { labelWidth = 0; }
+                point = CGPointMake(startX + labelWidth, _chartMarginBottom + _chartCavanHeight);
                 CGContextMoveToPoint(ctx, point.x, point.y - 2);
                 CGContextAddLineToPoint(ctx, point.x, point.y);
                 CGContextStrokePath(ctx);
+                startX = point.x;
             }
 
             // draw y axis separator
